@@ -4,18 +4,6 @@ local ESP = {}
 
 ESP.Settings = {
     Enabled = false,
-    Arrow = {
-        Enable = false,
-        TeamCheck = true,
-        DistFromCenter = 80,
-        TriangleHeight = 16,
-        TriangleWidth = 16,
-        TriangleFilled = true,
-        TriangleTransparency = 0,
-        TriangleThickness = 1,
-        TriangleColor = Color3.fromRGB(255, 255, 255),
-        AntiAliasing = false
-    },
     Box = {
         Enable = false,
         TeamCheck = true,
@@ -66,13 +54,6 @@ end
 
 local function createEsp(player)
     local esp = {
-        arrow = create("Triangle", {
-            Thickness = ESP.Settings.Arrow.TriangleThickness,
-            Color = ESP.Settings.Arrow.TriangleColor,
-            Transparency = 1 - ESP.Settings.Arrow.TriangleTransparency,
-            Filled = ESP.Settings.Arrow.TriangleFilled,
-            Visible = false
-        }),
         box = create("Square", {
             Color = ESP.Settings.Box.BoxColor,
             Thickness = ESP.Settings.Box.BoxThickness,
@@ -105,7 +86,7 @@ local function createEsp(player)
         cornerBox = {},
     }
     
-    for i = 1, 16 do
+    for i = 1, 8 do
         table.insert(esp.cornerBox, create("Line", {
             Thickness = 1,
             Color = ESP.Settings.CornerBox.BoxColor,
@@ -214,38 +195,38 @@ local function updateEsp()
                     end
 
                     if ESP.Settings.CornerBox.Enable then
-                        local lineW = (boxSize.X / 5)
+                        local lineW = (boxSize.X / 4)
                         local lineH = (boxSize.Y / 6)
                         local lineT = 1
 
                         local boxLines = esp.cornerBox
                         -- top left
-                        boxLines[1].From = Vector2.new(boxPosition.X - lineT, boxPosition.Y - lineT)
-                        boxLines[1].To = Vector2.new(boxPosition.X + lineW, boxPosition.Y - lineT)
+                        boxLines[1].From = Vector2.new(boxPosition.X, boxPosition.Y)
+                        boxLines[1].To = Vector2.new(boxPosition.X + lineW, boxPosition.Y)
 
-                        boxLines[2].From = Vector2.new(boxPosition.X - lineT, boxPosition.Y - lineT)
-                        boxLines[2].To = Vector2.new(boxPosition.X - lineT, boxPosition.Y + lineH)
+                        boxLines[2].From = Vector2.new(boxPosition.X, boxPosition.Y)
+                        boxLines[2].To = Vector2.new(boxPosition.X, boxPosition.Y + lineH)
 
                         -- top right
-                        boxLines[3].From = Vector2.new(boxPosition.X + boxSize.X - lineW, boxPosition.Y - lineT)
-                        boxLines[3].To = Vector2.new(boxPosition.X + boxSize.X + lineT, boxPosition.Y - lineT)
+                        boxLines[3].From = Vector2.new(boxPosition.X + boxSize.X - lineW, boxPosition.Y)
+                        boxLines[3].To = Vector2.new(boxPosition.X + boxSize.X, boxPosition.Y)
 
-                        boxLines[4].From = Vector2.new(boxPosition.X + boxSize.X + lineT, boxPosition.Y - lineT)
-                        boxLines[4].To = Vector2.new(boxPosition.X + boxSize.X + lineT, boxPosition.Y + lineH)
+                        boxLines[4].From = Vector2.new(boxPosition.X + boxSize.X, boxPosition.Y)
+                        boxLines[4].To = Vector2.new(boxPosition.X + boxSize.X, boxPosition.Y + lineH)
 
                         -- bottom left
-                        boxLines[5].From = Vector2.new(boxPosition.X - lineT, boxPosition.Y + boxSize.Y - lineH)
-                        boxLines[5].To = Vector2.new(boxPosition.X - lineT, boxPosition.Y + boxSize.Y + lineT)
+                        boxLines[5].From = Vector2.new(boxPosition.X, boxPosition.Y + boxSize.Y - lineH)
+                        boxLines[5].To = Vector2.new(boxPosition.X, boxPosition.Y + boxSize.Y)
 
-                        boxLines[6].From = Vector2.new(boxPosition.X - lineT, boxPosition.Y + boxSize.Y + lineT)
-                        boxLines[6].To = Vector2.new(boxPosition.X + lineW, boxPosition.Y + boxSize.Y + lineT)
+                        boxLines[6].From = Vector2.new(boxPosition.X, boxPosition.Y + boxSize.Y)
+                        boxLines[6].To = Vector2.new(boxPosition.X + lineW, boxPosition.Y + boxSize.Y)
 
                         -- bottom right
-                        boxLines[7].From = Vector2.new(boxPosition.X + boxSize.X - lineW, boxPosition.Y + boxSize.Y + lineT)
-                        boxLines[7].To = Vector2.new(boxPosition.X + boxSize.X + lineT, boxPosition.Y + boxSize.Y + lineT)
+                        boxLines[7].From = Vector2.new(boxPosition.X + boxSize.X - lineW, boxPosition.Y + boxSize.Y)
+                        boxLines[7].To = Vector2.new(boxPosition.X + boxSize.X, boxPosition.Y + boxSize.Y)
 
-                        boxLines[8].From = Vector2.new(boxPosition.X + boxSize.X + lineT, boxPosition.Y + boxSize.Y - lineH)
-                        boxLines[8].To = Vector2.new(boxPosition.X + boxSize.X + lineT, boxPosition.Y + boxSize.Y + lineT)
+                        boxLines[8].From = Vector2.new(boxPosition.X + boxSize.X, boxPosition.Y + boxSize.Y - lineH)
+                        boxLines[8].To = Vector2.new(boxPosition.X + boxSize.X, boxPosition.Y + boxSize.Y)
 
                         for _, line in ipairs(boxLines) do
                             line.Visible = true
