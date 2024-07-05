@@ -120,9 +120,9 @@ local function createEsp(player)
             Visible = false
         }),
         cornerBox = {},
-        highlight = Instance.new("Highlight", CoreGui:FindFirstChild("Highlight_Storage") or Instance.new("Folder", CoreGui))
+        highlight = Instance.new("Highlight")
     }
-    
+
     for i = 1, 16 do
         table.insert(esp.cornerBox, create("Line", {
             Thickness = 1,
@@ -131,14 +131,16 @@ local function createEsp(player)
             Visible = false
         }))
     end
-    
+
     esp.highlight.FillColor = ESP.Settings.Highlight.FillColor
     esp.highlight.DepthMode = ESP.Settings.Highlight.DepthMode
     esp.highlight.FillTransparency = ESP.Settings.Highlight.FillTransparency
     esp.highlight.OutlineColor = ESP.Settings.Highlight.OutlineColor
     esp.highlight.OutlineTransparency = ESP.Settings.Highlight.OutlineTransparency
     esp.highlight.Adornee = player.Character
-    
+    esp.highlight.Enabled = false
+    esp.highlight.Parent = CoreGui:FindFirstChild("Highlight_Storage") or Instance.new("Folder", CoreGui)
+
     cache[player] = esp
 end
 
@@ -151,12 +153,13 @@ local function removeEsp(player)
             for _, line in pairs(drawing) do
                 line:Remove()
             end
+        elseif drawing:IsA("Highlight") then
+            drawing:Destroy()
         else
             drawing:Remove()
         end
     end
 
-    esp.highlight:Destroy()
     cache[player] = nil
 end
 
