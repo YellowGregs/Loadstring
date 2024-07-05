@@ -23,14 +23,6 @@ ESP.Settings = {
         BoxThickness = 1,
         BoxTransparency = 1
     },
-    Cham = {
-        Enable = false,
-        TeamCheck = true,
-        Red = Color3.fromRGB(255, 0, 0),
-        Green = Color3.fromRGB(0, 255, 0),
-        Color = Color3.fromRGB(255, 0, 0),
-        TeamColor = false
-    },
     Tracer = {
         Enable = false,
         TeamCheck = true,
@@ -55,14 +47,6 @@ ESP.Settings = {
         TeamCheck = true,
         BoxOutlineColor = Color3.new(0, 0, 0),
         BoxColor = Color3.new(1, 1, 1),
-    },
-    Highlight = {
-        Enable = false,
-        FillColor = Color3.fromRGB(175, 25, 255),
-        DepthMode = "AlwaysOnTop",
-        FillTransparency = 0.5,
-        OutlineColor = Color3.fromRGB(255, 255, 255),
-        OutlineTransparency = 0
     }
 }
 
@@ -70,7 +54,6 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 local Camera = workspace.CurrentCamera
-local CoreGui = game:GetService("CoreGui")
 local cache = {}
 
 local function create(class, properties)
@@ -119,8 +102,7 @@ local function createEsp(player)
             Center = true,
             Visible = false
         }),
-        cornerBox = {},
-        highlight = Instance.new("Highlight")
+        cornerBox = {}
     }
 
     for i = 1, 16 do
@@ -131,15 +113,6 @@ local function createEsp(player)
             Visible = false
         }))
     end
-
-    esp.highlight.FillColor = ESP.Settings.Highlight.FillColor
-    esp.highlight.DepthMode = ESP.Settings.Highlight.DepthMode
-    esp.highlight.FillTransparency = ESP.Settings.Highlight.FillTransparency
-    esp.highlight.OutlineColor = ESP.Settings.Highlight.OutlineColor
-    esp.highlight.OutlineTransparency = ESP.Settings.Highlight.OutlineTransparency
-    esp.highlight.Adornee = player.Character
-    esp.highlight.Enabled = false
-    esp.highlight.Parent = CoreGui:FindFirstChild("Highlight_Storage") or Instance.new("Folder", CoreGui)
 
     cache[player] = esp
 end
@@ -153,8 +126,6 @@ local function removeEsp(player)
             for _, line in pairs(drawing) do
                 line:Remove()
             end
-        elseif drawing:IsA("Highlight") then
-            drawing:Destroy()
         else
             drawing:Remove()
         end
@@ -277,13 +248,6 @@ local function updateEsp()
                         esp.box.Visible = true
                     else
                         esp.box.Visible = false
-                    end
-
-                    if ESP.Settings.Cham.Enable and ESP.Settings.Enabled then
-                        esp.highlight.Adornee = character
-                        esp.highlight.Enabled = true
-                    else
-                        esp.highlight.Enabled = false
                     end
 
                     if ESP.Settings.Health.Enable and ESP.Settings.Enabled then
