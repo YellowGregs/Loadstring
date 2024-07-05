@@ -3,8 +3,9 @@
 local ESP = {}
 
 ESP.Settings = {
+    Enabled = false,
     Arrow = {
-        Enable = true,
+        Enable = false,
         TeamCheck = true,
         DistFromCenter = 80,
         TriangleHeight = 16,
@@ -16,14 +17,14 @@ ESP.Settings = {
         AntiAliasing = false
     },
     Box = {
-        Enable = true,
+        Enable = false,
         TeamCheck = true,
         BoxColor = Color3.fromRGB(255, 255, 255),
         BoxThickness = 1,
         BoxTransparency = 1
     },
     Cham = {
-        Enable = true,
+        Enable = false,
         TeamCheck = true,
         Red = Color3.fromRGB(255, 0, 0),
         Green = Color3.fromRGB(0, 255, 0),
@@ -31,32 +32,32 @@ ESP.Settings = {
         TeamColor = false
     },
     Tracer = {
-        Enable = true,
+        Enable = false,
         TeamCheck = true,
         TracerColor = Color3.new(1, 1, 1),
         TracerThickness = 2,
         TracerPosition = "Bottom"
     },
     Health = {
-        Enable = true,
+        Enable = false,
         TeamCheck = true,
         HealthOutlineColor = Color3.new(0, 0, 0),
         HealthHighColor = Color3.new(0, 1, 0),
         HealthLowColor = Color3.new(1, 0, 0)
     },
     Distance = {
-        Enable = true,
+        Enable = false,
         TeamCheck = true,
         DistanceColor = Color3.new(1, 1, 1)
     },
     CornerBox = {
-        Enable = true,
+        Enable = false,
         TeamCheck = true,
         BoxOutlineColor = Color3.new(0, 0, 0),
         BoxColor = Color3.new(1, 1, 1),
     },
     Highlight = {
-        Enable = true,
+        Enable = false,
         FillColor = Color3.fromRGB(175, 25, 255),
         DepthMode = "AlwaysOnTop",
         FillTransparency = 0.5,
