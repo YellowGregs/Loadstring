@@ -35,6 +35,7 @@ ESP.Settings = {
         TeamCheck = true,
         BoxOutlineColor = Color3.new(0, 0, 0),
         BoxColor = Color3.new(1, 1, 1),
+        BoxThickness = 1
     }
 }
 
@@ -88,7 +89,7 @@ local function createEsp(player)
     
     for i = 1, 8 do
         table.insert(esp.cornerBox, create("Line", {
-            Thickness = 1,
+            Thickness = ESP.Settings.CornerBox.BoxThickness,
             Color = ESP.Settings.CornerBox.BoxColor,
             Transparency = 1,
             Visible = false
@@ -197,7 +198,6 @@ local function updateEsp()
                     if ESP.Settings.CornerBox.Enable then
                         local lineW = (boxSize.X / 4)
                         local lineH = (boxSize.Y / 6)
-                        local lineT = 1
 
                         local boxLines = esp.cornerBox
                         -- top left
