@@ -54,6 +54,14 @@ ESP.Settings = {
         TeamCheck = true,
         BoxOutlineColor = Color3.new(0, 0, 0),
         BoxColor = Color3.new(1, 1, 1),
+    },
+    Highlight = {
+        Enable = true,
+        FillColor = Color3.fromRGB(175, 25, 255),
+        DepthMode = "AlwaysOnTop",
+        FillTransparency = 0.5,
+        OutlineColor = Color3.fromRGB(255, 255, 255),
+        OutlineTransparency = 0
     }
 }
 
@@ -61,6 +69,7 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 local Camera = workspace.CurrentCamera
+local CoreGui = game:GetService("CoreGui")
 local cache = {}
 
 local function create(class, properties)
@@ -87,13 +96,6 @@ local function createEsp(player)
             Filled = false,
             Visible = false
         }),
-        cham = create("Square", {
-            Color = ESP.Settings.Cham.Color,
-            Thickness = 1,
-            Filled = false,
-            Transparency = 1,
-            Visible = false
-        }),
         tracer = create("Line", {
             Thickness = ESP.Settings.Tracer.TracerThickness,
             Color = ESP.Settings.Tracer.TracerColor,
@@ -117,6 +119,7 @@ local function createEsp(player)
             Visible = false
         }),
         cornerBox = {},
+        highlight = Instance.new("Highlight", CoreGui:FindFirstChild("Highlight_Storage") or Instance.new("Folder", CoreGui))
     }
     
     for i = 1, 16 do
@@ -127,7 +130,14 @@ local function createEsp(player)
             Visible = false
         }))
     end
-
+    
+    esp.highlight.FillColor = ESP.Settings.Highlight.FillColor
+    esp.highlight.DepthMode = ESP.Settings.Highlight.DepthMode
+    esp.highlight.FillTransparency = ESP.Settings.Highlight.FillTransparency
+    esp.highlight.OutlineColor = ESP.Settings.Highlight.OutlineColor
+    esp.highlight.OutlineTransparency = ESP.Settings.Highlight.OutlineTransparency
+    esp.highlight.Adornee = player.Character
+    
     cache[player] = esp
 end
 
@@ -145,7 +155,92 @@ local function removeEsp(player)
         end
     end
 
+    esp.highlight:Destroy()
     cache[player] = nil
+end
+
+local function GetRelative(pos, char)
+    if not char then return Vector2.new(0, 0) end
+
+    local rootP = char.PrimaryPart.Position
+    local camP = Camera.CFrame.Position
+    local relative = CFrame.new(Vector3.new(rootP.X, camP.Y, rootP.Z), camP):PointToObjectSpace(pos)
+
+    return Vector2.new(relative.X, relative.Z)
+end
+
+local function RelativeToCenter(v)
+    return Camera.ViewportSize / 2 - v
+end
+
+local function RotateVect(v, a)
+    a = math.rad(a)
+    local x = v.x * math.cos(a) - v.y * math.sin(a)
+    local y = v.x * math.sin(a) + v.y * math.cos(a)
+
+    return Vector2.new(x, y)
+end
+
+local function DrawTriangle(color)
+    local l = Drawing.new("Triangle")
+    l.Visible = false
+    l.Color = color
+    l.Filled = ESP.Settings.Arrow.TriangleFilled
+    l.Thickness = ESP.Settings.Arrow.TriangleThickness
+    l.Transparency = 1 - ESP.Settings.Arrow.TriangleTransparency
+    return l
+end
+
+local function AntiA(v)
+    if not ESP.Settings.Arrow.AntiAliasing then return v end
+    return Vector2.new(math.round(v.x), math.round(v.y))
+end
+
+local function ShowArrow(PLAYER)
+    local Arrow = DrawTriangle(ESP.Settings.Arrow.TriangleColor)
+
+    local function Update()
+        local c; c = RunService.RenderStepped:Connect(function()
+            if PLAYER and PLAYER.Character then
+                local CHAR = PLAYER.Character
+                local HUM = CHAR:FindFirstChildOfClass("Humanoid")
+
+                if HUM and CHAR.PrimaryPart and HUM.Health > 0 then
+                    local _, vis = Camera:WorldToViewportPoint(CHAR.PrimaryPart.Position)
+                    if not vis then
+                        local rel = GetRelative(CHAR.PrimaryPart.Position, LocalPlayer.Character)
+                        local direction = rel.unit
+
+                        local base = direction * ESP.Settings.Arrow.DistFromCenter
+                        local sideLength = ESP.Settings.Arrow.TriangleWidth / 2
+                        local baseL = base + RotateVect(direction, 90) * sideLength
+                        local baseR = base + RotateVect(direction, -90) * sideLength
+
+                        local tip = direction * (ESP.Settings.Arrow.DistFromCenter + ESP.Settings.Arrow.TriangleHeight)
+
+                        Arrow.PointA = AntiA(RelativeToCenter(baseL))
+                        Arrow.PointB = AntiA(RelativeToCenter(baseR))
+                        Arrow.PointC = AntiA(RelativeToCenter(tip))
+
+                        Arrow.Visible = true
+                    else
+                        Arrow.Visible = false
+                    end
+                else
+                    Arrow.Visible = false
+                end
+            else
+                Arrow.Visible = false
+
+                if not PLAYER or not PLAYER.Parent then
+                    Arrow:Remove()
+                    c:Disconnect()
+                end
+            end
+        end)
+    end
+
+    coroutine.wrap(Update)()
 end
 
 local function updateEsp()
@@ -166,8 +261,7 @@ local function updateEsp()
                     local boxPosition = Vector2.new(math.floor(hrp2D.X - charSize * 1.8 / 2), math.floor(hrp2D.Y - charSize * 1.6 / 2))
 
                     if ESP.Settings.Arrow.Enable and ESP.Settings.Enabled then
-                        esp.arrow.Visible = true
-                        -- brrrr
+                        ShowArrow(player)
                     else
                         esp.arrow.Visible = false
                     end
@@ -182,22 +276,20 @@ local function updateEsp()
                     end
 
                     if ESP.Settings.Cham.Enable and ESP.Settings.Enabled then
-                        esp.cham.Size = boxSize
-                        esp.cham.Position = boxPosition
-                        esp.cham.Color = ESP.Settings.Cham.Color
-                        esp.cham.Visible = true
+                        esp.highlight.Adornee = character
+                        esp.highlight.Enabled = true
                     else
-                        esp.cham.Visible = false
+                        esp.highlight.Enabled = false
                     end
 
                     if ESP.Settings.Health.Enable and ESP.Settings.Enabled then
                         esp.healthOutline.Visible = true
                         esp.health.Visible = true
-                        local healthPercentage = player.Character.Humanoid.Health / player.Character.Humanoid.MaxHealth
+                        local healthPercentage = humanoid.Health / humanoid.MaxHealth
                         esp.healthOutline.From = Vector2.new(boxPosition.X - 6, boxPosition.Y + boxSize.Y)
                         esp.healthOutline.To = Vector2.new(esp.healthOutline.From.X, esp.healthOutline.From.Y - boxSize.Y)
                         esp.health.From = Vector2.new((boxPosition.X - 5), boxPosition.Y + boxSize.Y)
-                        esp.health.To = Vector2.new(esp.health.From.X, esp.health.From.Y - (player.Character.Humanoid.Health / player.Character.Humanoid.MaxHealth) * boxSize.Y)
+                        esp.health.To = Vector2.new(esp.health.From.X, esp.health.From.Y - (humanoid.Health / humanoid.MaxHealth) * boxSize.Y)
                         esp.health.Color = ESP.Settings.Health.HealthLowColor:Lerp(ESP.Settings.Health.HealthHighColor, healthPercentage)
                     else
                         esp.healthOutline.Visible = false
