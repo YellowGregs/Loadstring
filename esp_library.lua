@@ -102,9 +102,9 @@ local function createEsp(player)
             Center = true,
             Visible = false
         }),
-        cornerBox = {}
+        cornerBox = {},
     }
-
+    
     for i = 1, 16 do
         table.insert(esp.cornerBox, create("Line", {
             Thickness = 1,
@@ -113,7 +113,7 @@ local function createEsp(player)
             Visible = false
         }))
     end
-
+    
     cache[player] = esp
 end
 
