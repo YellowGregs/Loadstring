@@ -363,6 +363,7 @@ end)
 
 Players.PlayerRemoving:Connect(function(player)
     removeEsp(player)
+    cache[player] = nil
 end)
 
 RunService.RenderStepped:Connect(updateEsp)
