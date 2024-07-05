@@ -140,7 +140,7 @@ local function updateEsp()
 
             if rootPart and head and humanoid then
                 local position, onScreen = Camera:WorldToViewportPoint(rootPart.Position)
-                if onScreen then
+                if onScreen and position.Z > 0 then
                     local hrp2D = Camera:WorldToViewportPoint(rootPart.Position)
                     local charSize = (Camera:WorldToViewportPoint(rootPart.Position - Vector3.new(0, 3, 0)).Y - Camera:WorldToViewportPoint(rootPart.Position + Vector3.new(0, 2.6, 0)).Y) / 2
                     local boxSize = Vector2.new(math.floor(charSize * 1.8), math.floor(charSize * 1.9))
