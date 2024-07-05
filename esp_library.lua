@@ -134,100 +134,30 @@ local function removeEsp(player)
     cache[player] = nil
 end
 
-local function GetRelative(pos, char)
-    if not char then return Vector2.new(0, 0) end
-
-    local rootP = char.PrimaryPart.Position
-    local camP = Camera.CFrame.Position
-    local relative = CFrame.new(Vector3.new(rootP.X, camP.Y, rootP.Z), camP):PointToObjectSpace(pos)
-
-    return Vector2.new(relative.X, relative.Z)
-end
-
-local function RelativeToCenter(v)
-    return Camera.ViewportSize / 2 - v
-end
-
-local function RotateVect(v, a)
-    a = math.rad(a)
-    local x = v.x * math.cos(a) - v.y * math.sin(a)
-    local y = v.x * math.sin(a) + v.y * math.cos(a)
-
-    return Vector2.new(x, y)
-end
-
-local function DrawTriangle(color)
-    local l = Drawing.new("Triangle")
-    l.Visible = false
-    l.Color = color
-    l.Filled = ESP.Settings.Arrow.TriangleFilled
-    l.Thickness = ESP.Settings.Arrow.TriangleThickness
-    l.Transparency = 1 - ESP.Settings.Arrow.TriangleTransparency
-    return l
-end
-
-local function AntiA(v)
-    if not ESP.Settings.Arrow.AntiAliasing then return v end
-    return Vector2.new(math.round(v.x), math.round(v.y))
-end
-
-local function ShowArrow(PLAYER)
-    local Arrow = DrawTriangle(ESP.Settings.Arrow.TriangleColor)
-
-    local function Update()
-        local c; c = RunService.RenderStepped:Connect(function()
-            if PLAYER and PLAYER.Character then
-                local CHAR = PLAYER.Character
-                local HUM = CHAR:FindFirstChildOfClass("Humanoid")
-
-                if HUM and CHAR.PrimaryPart and HUM.Health > 0 then
-                    local _, vis = Camera:WorldToViewportPoint(CHAR.PrimaryPart.Position)
-                    if not vis then
-                        local rel = GetRelative(CHAR.PrimaryPart.Position, LocalPlayer.Character)
-                        local direction = rel.unit
-
-                        local base = direction * ESP.Settings.Arrow.DistFromCenter
-                        local sideLength = ESP.Settings.Arrow.TriangleWidth / 2
-                        local baseL = base + RotateVect(direction, 90) * sideLength
-                        local baseR = base + RotateVect(direction, -90) * sideLength
-
-                        local tip = direction * (ESP.Settings.Arrow.DistFromCenter + ESP.Settings.Arrow.TriangleHeight)
-
-                        Arrow.PointA = AntiA(RelativeToCenter(baseL))
-                        Arrow.PointB = AntiA(RelativeToCenter(baseR))
-                        Arrow.PointC = AntiA(RelativeToCenter(tip))
-
-                        Arrow.Visible = true
-                    else
-                        Arrow.Visible = false
+local function updateEsp()
+    if not ESP.Settings.Enabled then
+        for player, esp in pairs(cache) do
+            for _, drawing in pairs(esp) do
+                if type(drawing) == "table" then
+                    for _, line in pairs(drawing) do
+                        line.Visible = false
                     end
                 else
-                    Arrow.Visible = false
-                end
-            else
-                Arrow.Visible = false
-
-                if not PLAYER or not PLAYER.Parent then
-                    Arrow:Remove()
-                    c:Disconnect()
+                    drawing.Visible = false
                 end
             end
-        end)
+        end
+        return
     end
 
-    coroutine.wrap(Update)()
-end
-
-local function updateEsp()
     for player, esp in pairs(cache) do
         local character, team = player.Character, player.Team
         if character and (not ESP.Settings.Box.TeamCheck or (team and team ~= LocalPlayer.Team)) then
             local rootPart = character:FindFirstChild("HumanoidRootPart")
             local head = character:FindFirstChild("Head")
             local humanoid = character:FindFirstChild("Humanoid")
-            local shouldShow = ESP.Settings.Enabled
 
-            if rootPart and head and humanoid and shouldShow then
+            if rootPart and head and humanoid then
                 local position, onScreen = Camera:WorldToViewportPoint(rootPart.Position)
                 if onScreen then
                     local hrp2D = Camera:WorldToViewportPoint(rootPart.Position)
@@ -235,13 +165,7 @@ local function updateEsp()
                     local boxSize = Vector2.new(math.floor(charSize * 1.8), math.floor(charSize * 1.9))
                     local boxPosition = Vector2.new(math.floor(hrp2D.X - charSize * 1.8 / 2), math.floor(hrp2D.Y - charSize * 1.6 / 2))
 
-                    if ESP.Settings.Arrow.Enable and ESP.Settings.Enabled then
-                        ShowArrow(player)
-                    else
-                        esp.arrow.Visible = false
-                    end
-
-                    if ESP.Settings.Box.Enable and ESP.Settings.Enabled then
+                    if ESP.Settings.Box.Enable then
                         esp.box.Size = boxSize
                         esp.box.Position = boxPosition
                         esp.box.Color = ESP.Settings.Box.BoxColor
@@ -250,7 +174,7 @@ local function updateEsp()
                         esp.box.Visible = false
                     end
 
-                    if ESP.Settings.Health.Enable and ESP.Settings.Enabled then
+                    if ESP.Settings.Health.Enable then
                         esp.healthOutline.Visible = true
                         esp.health.Visible = true
                         local healthPercentage = humanoid.Health / humanoid.MaxHealth
@@ -264,7 +188,7 @@ local function updateEsp()
                         esp.health.Visible = false
                     end
 
-                    if ESP.Settings.Distance.Enable and ESP.Settings.Enabled then
+                    if ESP.Settings.Distance.Enable then
                         local distance = (Camera.CFrame.p - rootPart.Position).Magnitude
                         esp.distance.Text = string.format("%.1f studs", distance)
                         esp.distance.Position = Vector2.new(boxPosition.X + boxSize.X / 2, boxPosition.Y + boxSize.Y + 5)
@@ -273,7 +197,7 @@ local function updateEsp()
                         esp.distance.Visible = false
                     end
 
-                    if ESP.Settings.Tracer.Enable and ESP.Settings.Enabled then
+                    if ESP.Settings.Tracer.Enable then
                         local tracerY
                         if ESP.Settings.Tracer.TracerPosition == "Top" then
                             tracerY = 0
@@ -289,7 +213,7 @@ local function updateEsp()
                         esp.tracer.Visible = false
                     end
 
-                    if ESP.Settings.CornerBox.Enable and ESP.Settings.Enabled then
+                    if ESP.Settings.CornerBox.Enable then
                         local lineW = (boxSize.X / 5)
                         local lineH = (boxSize.Y / 6)
                         local lineT = 1
@@ -363,7 +287,6 @@ end)
 
 Players.PlayerRemoving:Connect(function(player)
     removeEsp(player)
-    cache[player] = nil
 end)
 
 RunService.RenderStepped:Connect(updateEsp)
