@@ -1,30 +1,24 @@
-for i,v in pairs(game.CoreGui:GetChildren()) do
-	if v.Name == "UiLib" then
-		v:Destroy()
-	end
-end
-
 local UiLib = Instance.new("ScreenGui")
 UiLib.Name = "UiLib"
 UiLib.Parent = game.CoreGui
 UiLib.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 local function getNextWindowPos()
-	local biggest = 0;
-	local ok = nil;
+	local biggest = 0
+	local ok = nil
 	for i, v in pairs(UiLib:GetChildren()) do
 		if v.Position.X.Offset > biggest then
 			biggest = v.Position.X.Offset
-			ok = v;
+			ok = v
 		end
 	end
 	if biggest == 0 then
-		biggest = biggest + 15;
+		biggest = biggest + 15
 	else
-		biggest = biggest + ok.Size.X.Offset + 10;
+		biggest = biggest + ok.Size.X.Offset + 10
 	end
-	
-	return biggest;
+
+	return biggest
 end
 
 local Library = {}
@@ -95,20 +89,20 @@ function Library:Window(title)
 	Minimize.ImageRectOffset = Vector2.new(764, 244)
 	Minimize.ImageRectSize = Vector2.new(36, 36)
 
-	local function UZVNGAL_fake_script() -- Minimize.Script 
+	local function UZVNGAL_fake_script()
 		local script = Instance.new('Script', Minimize)
 
 		script.Parent.MouseButton1Click:Connect(function()
-			if script.Parent.Parent.Container.Size == UDim2.new(0, 300,0, 800) then 
-				game:GetService("TweenService"):Create(script.Parent, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation = 180}):Play();
+			if script.Parent.Parent.Container.Size == UDim2.new(0, 300, 0, 800) then 
+				game:GetService("TweenService"):Create(script.Parent, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation = 180}):Play()
 				game:GetService("TweenService"):Create(script.Parent, TweenInfo.new(0.25), {ImageColor3 = Color3.fromRGB(255, 0, 68)}):Play()
-				script.Parent.Parent.Container:TweenSize(UDim2.new(0, 300,0, 0), "InOut", "Sine", 0.25, true)
+				script.Parent.Parent.Container:TweenSize(UDim2.new(0, 300, 0, 0), "InOut", "Sine", 0.25, true)
 				wait(0.25)
 				script.Parent.Parent.Line.Visible = false
 			else
-				game:GetService("TweenService"):Create(script.Parent, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation = 90}):Play();
+				game:GetService("TweenService"):Create(script.Parent, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation = 90}):Play()
 				game:GetService("TweenService"):Create(script.Parent, TweenInfo.new(0.25), {ImageColor3 = Color3.fromRGB(0, 255, 102)}):Play()
-				script.Parent.Parent.Container:TweenSize(UDim2.new(0, 300,0, 800), "InOut", "Sine", 0.2, true)
+				script.Parent.Parent.Container:TweenSize(UDim2.new(0, 300, 0, 800), "InOut", "Sine", 0.2, true)
 				script.Parent.Parent.Line.Visible = true
 			end
 		end)
@@ -171,7 +165,7 @@ function Library:Window(title)
 		ButtonName.TextSize = 14.000
 		ButtonName.TextWrapped = true
 		
-		local function ZNVYM_fake_script() -- Button.Script 
+		local function ZNVYM_fake_script()
 			local script = Instance.new('Script', Button)
 			
 			script.Parent.MouseButton1Click:Connect(function()
@@ -256,19 +250,19 @@ function Library:Window(title)
 		On.ImageRectOffset = Vector2.new(312, 4)
 		On.ImageRectSize = Vector2.new(24, 24)
 		
-		local function XLZZDX_fake_script() -- Toggle.Script 
+		local function XLZZDX_fake_script()
 			local script = Instance.new('Script', Toggle)
 			
 			script.Parent.MouseButton1Click:Connect(function()
 				if script.Parent.Off.Rotation == 0 then
 					script.Parent.On.Rotation = 0
-					game:GetService("TweenService"):Create(script.Parent.Off, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation = 360}):Play();
+					game:GetService("TweenService"):Create(script.Parent.Off, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation = 360}):Play()
 					wait(0.3)
 					script.Parent.Off.Visible = false
 					script.Parent.On.Visible = true
 				else
 					script.Parent.Off.Rotation = 0
-					game:GetService("TweenService"):Create(script.Parent.On, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation = -360}):Play();
+					game:GetService("TweenService"):Create(script.Parent.On, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation = -360}):Play()
 					wait(0.3)
 					script.Parent.On.Visible = false
 					script.Parent.Off.Visible = true
@@ -456,15 +450,19 @@ function Library:Window(title)
 	function Lib:ColorPicker(name, defaultColor, callback)
 		local ColorPickerContainer = Instance.new("Frame")
 		local ColorPickerName = Instance.new("TextLabel")
-		local ColorDisplay = Instance.new("Frame")
+		local ColorDisplay = Instance.new("TextButton")
 		local UICorner = Instance.new("UICorner")
-		
+		local PickerFrame = Instance.new("Frame")
+		local PickerUICorner = Instance.new("UICorner")
+		local ColorWheel = Instance.new("ImageButton")
+		local WheelImage = "rbxassetid://698052001"
+
 		ColorPickerContainer.Name = "ColorPickerContainer"
 		ColorPickerContainer.Parent = Container
 		ColorPickerContainer.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 		ColorPickerContainer.BorderSizePixel = 0
 		ColorPickerContainer.Size = UDim2.new(0, 300, 0, 40)
-		
+
 		ColorPickerName.Name = "ColorPickerName"
 		ColorPickerName.Parent = ColorPickerContainer
 		ColorPickerName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -478,89 +476,48 @@ function Library:Window(title)
 		ColorPickerName.TextSize = 14.000
 		ColorPickerName.TextWrapped = true
 		ColorPickerName.TextXAlignment = Enum.TextXAlignment.Left
-		
+
 		ColorDisplay.Name = "ColorDisplay"
 		ColorDisplay.Parent = ColorPickerContainer
 		ColorDisplay.BackgroundColor3 = defaultColor
 		ColorDisplay.BorderSizePixel = 0
 		ColorDisplay.Position = UDim2.new(0.852941215, 0, 0.0666666627, 0)
 		ColorDisplay.Size = UDim2.new(0, 30, 0, 28)
-		
+
 		UICorner.CornerRadius = UDim.new(0, 3)
 		UICorner.Parent = ColorDisplay
-		
-		function Lib:ColorPicker(name, defaultColor, callback)
-            local ColorPickerContainer = Instance.new("Frame")
-            local ColorPickerName = Instance.new("TextLabel")
-            local ColorDisplay = Instance.new("TextButton")
-            local UICorner = Instance.new("UICorner")
-            local PickerFrame = Instance.new("Frame")
-            local PickerUICorner = Instance.new("UICorner")
-            local ColorWheel = Instance.new("ImageButton")
-            local WheelImage = "rbxassetid://698052001"  -- A sample color wheel image
-        
-            ColorPickerContainer.Name = "ColorPickerContainer"
-            ColorPickerContainer.Parent = Container
-            ColorPickerContainer.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-            ColorPickerContainer.BorderSizePixel = 0
-            ColorPickerContainer.Size = UDim2.new(0, 300, 0, 40)
-        
-            ColorPickerName.Name = "ColorPickerName"
-            ColorPickerName.Parent = ColorPickerContainer
-            ColorPickerName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            ColorPickerName.BackgroundTransparency = 1.000
-            ColorPickerName.Position = UDim2.new(0.0245098043, 0, 0.142857105, 0)
-            ColorPickerName.Size = UDim2.new(0, 250, 0, 28)
-            ColorPickerName.Font = Enum.Font.GothamSemibold
-            ColorPickerName.Text = name
-            ColorPickerName.TextColor3 = Color3.fromRGB(255, 255, 255)
-            ColorPickerName.TextScaled = true
-            ColorPickerName.TextSize = 14.000
-            ColorPickerName.TextWrapped = true
-            ColorPickerName.TextXAlignment = Enum.TextXAlignment.Left
-        
-            ColorDisplay.Name = "ColorDisplay"
-            ColorDisplay.Parent = ColorPickerContainer
-            ColorDisplay.BackgroundColor3 = defaultColor
-            ColorDisplay.BorderSizePixel = 0
-            ColorDisplay.Position = UDim2.new(0.852941215, 0, 0.0666666627, 0)
-            ColorDisplay.Size = UDim2.new(0, 30, 0, 28)
-        
-            UICorner.CornerRadius = UDim.new(0, 3)
-            UICorner.Parent = ColorDisplay
-        
-            PickerFrame.Name = "PickerFrame"
-            PickerFrame.Parent = ColorPickerContainer
-            PickerFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-            PickerFrame.Position = UDim2.new(0, 0, 1, 0)
-            PickerFrame.Size = UDim2.new(0, 300, 0, 300)
-            PickerFrame.Visible = false
-        
-            PickerUICorner.CornerRadius = UDim.new(0, 5)
-            PickerUICorner.Parent = PickerFrame
-        
-            ColorWheel.Name = "ColorWheel"
-            ColorWheel.Parent = PickerFrame
-            ColorWheel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            ColorWheel.BackgroundTransparency = 1.000
-            ColorWheel.Position = UDim2.new(0.05, 0, 0.05, 0)
-            ColorWheel.Size = UDim2.new(0.9, 0, 0.9, 0)
-            ColorWheel.Image = WheelImage
-        
-            local function openColorPicker()
-                PickerFrame.Visible = not PickerFrame.Visible
-            end
-        
-            ColorDisplay.MouseButton1Click:Connect(openColorPicker)
-        
-            ColorWheel.MouseButton1Click:Connect(function()
-                local mouse = game.Players.LocalPlayer:GetMouse()
-                local color = Color3.fromHSV((mouse.X - ColorWheel.AbsolutePosition.X) / ColorWheel.AbsoluteSize.X, (mouse.Y - ColorWheel.AbsolutePosition.Y) / ColorWheel.AbsoluteSize.Y, 1)
-                ColorDisplay.BackgroundColor3 = color
-                callback(color)
-            end)
-        end
-    end
+
+		PickerFrame.Name = "PickerFrame"
+		PickerFrame.Parent = ColorPickerContainer
+		PickerFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+		PickerFrame.Position = UDim2.new(0, 0, 1, 0)
+		PickerFrame.Size = UDim2.new(0, 300, 0, 300)
+		PickerFrame.Visible = false
+
+		PickerUICorner.CornerRadius = UDim.new(0, 5)
+		PickerUICorner.Parent = PickerFrame
+
+		ColorWheel.Name = "ColorWheel"
+		ColorWheel.Parent = PickerFrame
+		ColorWheel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		ColorWheel.BackgroundTransparency = 1.000
+		ColorWheel.Position = UDim2.new(0.05, 0, 0.05, 0)
+		ColorWheel.Size = UDim2.new(0.9, 0, 0.9, 0)
+		ColorWheel.Image = WheelImage
+
+		local function openColorPicker()
+			PickerFrame.Visible = not PickerFrame.Visible
+		end
+
+		ColorDisplay.MouseButton1Click:Connect(openColorPicker)
+
+		ColorWheel.MouseButton1Click:Connect(function()
+			local mouse = game.Players.LocalPlayer:GetMouse()
+			local color = Color3.fromHSV((mouse.X - ColorWheel.AbsolutePosition.X) / ColorWheel.AbsoluteSize.X, (mouse.Y - ColorWheel.AbsolutePosition.Y) / ColorWheel.AbsoluteSize.Y, 1)
+			ColorDisplay.BackgroundColor3 = color
+			callback(color)
+		end)
+	end
 	
 	function Lib:Section(name)
 		local SectionContainer = Instance.new("Frame")
@@ -587,7 +544,6 @@ function Library:Window(title)
 	end
 	
 	return Lib
-	
 end
 
 return Library
