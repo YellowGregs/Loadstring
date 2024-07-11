@@ -48,6 +48,9 @@ local baseDrawingObj = setmetatable({
             warn("Attempted to get invalid property: " .. tostring(index))
             return nil
         end
+    end,
+    SetParent = function(self, parent)
+        self.Parent = parent
     end
 }, {
     __add = function(t1, t2)
