@@ -54,24 +54,31 @@ function UILibrary.new(title)
     self.screenGui = createInstance("ScreenGui", {Name = title, ResetOnSpawn = false})
     self.mainFrame = createInstance("Frame", {
         Parent = self.screenGui,
-        BackgroundColor3 = Color3.fromRGB(30, 30, 30),
-        Size = UDim2.new(0, 400, 0, 300),
-        Position = UDim2.new(0.5, -200, 0.5, -150),
-        BorderSizePixel = 0
+        BackgroundColor3 = Color3.fromRGB(20, 20, 20),
+        Size = UDim2.new(0, 400, 0, 50),
+        Position = UDim2.new(0.5, -200, 0.5, -25),
+        BorderSizePixel = 0,
+        ClipsDescendants = true
     })
     
     makeDraggable(self.mainFrame)
     
-    self.mainFrame.ClipsDescendants = true
-    
     self.titleLabel = createInstance("TextLabel", {
         Parent = self.mainFrame,
         BackgroundTransparency = 1,
-        Size = UDim2.new(1, 0, 0, 30),
+        Size = UDim2.new(1, 0, 0, 50),
         Text = title,
         TextColor3 = Color3.fromRGB(255, 255, 255),
         TextSize = 24,
         Font = Enum.Font.GothamBold
+    })
+
+    self.dropdownFrame = createInstance("Frame", {
+        Parent = self.mainFrame,
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1, 0, 0, 0),
+        Position = UDim2.new(0, 0, 1, 0),
+        ClipsDescendants = true
     })
 
     self.uiElements = {}
@@ -79,16 +86,32 @@ function UILibrary.new(title)
 
     self.screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
+    self.mainFrame.MouseButton1Click:Connect(function()
+        self:toggleDropdown()
+    end)
+
     return self
+end
+
+function UILibrary:toggleDropdown()
+    local newHeight = 0
+    if self.dropdownFrame.Size.Y.Scale == 0 then
+        for _, section in ipairs(self.sections) do
+            newHeight = newHeight + section.Size.Y.Offset
+        end
+        self.dropdownFrame:TweenSize(UDim2.new(1, 0, 0, newHeight), "Out", "Sine", 0.5, true)
+    else
+        self.dropdownFrame:TweenSize(UDim2.new(1, 0, 0, 0), "Out", "Sine", 0.5, true)
+    end
 end
 
 function UILibrary:createSection(title)
     local section = createInstance("Frame", {
-        Parent = self.mainFrame,
-        BackgroundColor3 = Color3.fromRGB(40, 40, 40),
+        Parent = self.dropdownFrame,
+        BackgroundColor3 = Color3.fromRGB(30, 30, 30),
         Size = UDim2.new(1, 0, 0, 200),
-        Position = UDim2.new(0, 0, 0, 30 + (#self.sections * 210)),
-        BorderSizePixel = 0
+        BorderSizePixel = 0,
+        ClipsDescendants = true
     })
 
     local sectionTitle = createInstance("TextLabel", {
@@ -100,6 +123,12 @@ function UILibrary:createSection(title)
         TextSize = 20,
         Font = Enum.Font.GothamBold
     })
+
+    local layout = createInstance("UIListLayout", {
+        Parent = section,
+        Padding = UDim.new(0, 10),
+        SortOrder = Enum.SortOrder.LayoutOrder
+    })
     
     table.insert(self.sections, section)
     return section
@@ -110,7 +139,6 @@ function UILibrary:createButton(section, title, callback)
         Parent = section,
         BackgroundColor3 = Color3.fromRGB(50, 50, 50),
         Size = UDim2.new(1, -20, 0, 30),
-        Position = UDim2.new(0, 10, 0, 40 + (#section:GetChildren() - 1) * 40),
         Text = title,
         TextColor3 = Color3.fromRGB(255, 255, 255),
         TextSize = 18,
@@ -132,8 +160,7 @@ function UILibrary:createToggle(section, title, default, callback)
     local frame = createInstance("Frame", {
         Parent = section,
         BackgroundTransparency = 1,
-        Size = UDim2.new(1, -20, 0, 30),
-        Position = UDim2.new(0, 10, 0, 40 + (#section:GetChildren() - 1) * 40)
+        Size = UDim2.new(1, -20, 0, 30)
     })
     
     local label = createInstance("TextLabel", {
@@ -173,8 +200,7 @@ function UILibrary:createSlider(section, title, min, max, default, callback)
     local frame = createInstance("Frame", {
         Parent = section,
         BackgroundTransparency = 1,
-        Size = UDim2.new(1, -20, 0, 30),
-        Position = UDim2.new(0, 10, 0, 40 + (#section:GetChildren() - 1) * 40)
+        Size = UDim2.new(1, -20, 0, 30)
     })
 
     local label = createInstance("TextLabel", {
@@ -244,8 +270,7 @@ function UILibrary:createDropdown(section, title, options, callback)
     local frame = createInstance("Frame", {
         Parent = section,
         BackgroundTransparency = 1,
-        Size = UDim2.new(1, -20, 0, 30),
-        Position = UDim2.new(0, 10, 0, 40 + (#section:GetChildren() - 1) * 40)
+        Size = UDim2.new(1, -20, 0, 30)
     })
 
     local label = createInstance("TextLabel", {
@@ -280,7 +305,11 @@ function UILibrary:createDropdown(section, title, options, callback)
         BorderSizePixel = 0
     })
     
-    local layout = createInstance("UIListLayout", {Parent = dropFrame})
+    local layout = createInstance("UIListLayout", {
+        Parent = dropFrame,
+        Padding = UDim.new(0, 5),
+        SortOrder = Enum.SortOrder.LayoutOrder
+    })
 
     for i, option in ipairs(options) do
         local optionButton = createInstance("TextButton", {
@@ -312,8 +341,7 @@ function UILibrary:createColorPicker(section, title, default, callback)
     local frame = createInstance("Frame", {
         Parent = section,
         BackgroundTransparency = 1,
-        Size = UDim2.new(1, -20, 0, 60),
-        Position = UDim2.new(0, 10, 0, 40 + (#section:GetChildren() - 1) * 60)
+        Size = UDim2.new(1, -20, 0, 60)
     })
 
     local label = createInstance("TextLabel", {
@@ -413,8 +441,7 @@ function UILibrary:createKeybind(section, title, defaultKey, callback)
     local frame = createInstance("Frame", {
         Parent = section,
         BackgroundTransparency = 1,
-        Size = UDim2.new(1, -20, 0, 30),
-        Position = UDim2.new(0, 10, 0, 40 + (#section:GetChildren() - 1) * 40)
+        Size = UDim2.new(1, -20, 0, 30)
     })
 
     local label = createInstance("TextLabel", {
@@ -453,22 +480,6 @@ function UILibrary:createKeybind(section, title, defaultKey, callback)
     end)
 
     return frame
-end
-
-function UILibrary:createLabel(section, text)
-    local label = createInstance("TextLabel", {
-        Parent = section,
-        BackgroundTransparency = 1,
-        Size = UDim2.new(1, -20, 0, 30),
-        Position = UDim2.new(0, 10, 0, 40 + (#section:GetChildren() - 1) * 40),
-        Text = text,
-        TextColor3 = Color3.fromRGB(255, 255, 255),
-        TextSize = 18,
-        Font = Enum.Font.Gotham,
-        TextXAlignment = Enum.TextXAlignment.Left
-    })
-
-    return label
 end
 
 return UILibrary
