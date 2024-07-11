@@ -456,6 +456,7 @@ function Library:Window(title)
 		local PickerUICorner = Instance.new("UICorner")
 		local ColorWheel = Instance.new("ImageButton")
 		local WheelImage = "rbxassetid://698052001"
+		local SelectedColor = Instance.new("Frame")
 
 		ColorPickerContainer.Name = "ColorPickerContainer"
 		ColorPickerContainer.Parent = Container
@@ -505,6 +506,13 @@ function Library:Window(title)
 		ColorWheel.Size = UDim2.new(0.9, 0, 0.9, 0)
 		ColorWheel.Image = WheelImage
 
+		SelectedColor.Name = "SelectedColor"
+		SelectedColor.Parent = PickerFrame
+		SelectedColor.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		SelectedColor.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		SelectedColor.BorderSizePixel = 1
+		SelectedColor.Size = UDim2.new(0, 10, 0, 10)
+
 		local function openColorPicker()
 			PickerFrame.Visible = not PickerFrame.Visible
 		end
@@ -513,7 +521,10 @@ function Library:Window(title)
 
 		ColorWheel.MouseButton1Click:Connect(function()
 			local mouse = game.Players.LocalPlayer:GetMouse()
-			local color = Color3.fromHSV((mouse.X - ColorWheel.AbsolutePosition.X) / ColorWheel.AbsoluteSize.X, (mouse.Y - ColorWheel.AbsolutePosition.Y) / ColorWheel.AbsoluteSize.Y, 1)
+			local x = math.clamp(mouse.X - ColorWheel.AbsolutePosition.X, 0, ColorWheel.AbsoluteSize.X)
+			local y = math.clamp(mouse.Y - ColorWheel.AbsolutePosition.Y, 0, ColorWheel.AbsoluteSize.Y)
+			local color = Color3.fromHSV(x / ColorWheel.AbsoluteSize.X, y / ColorWheel.AbsoluteSize.Y, 1)
+			SelectedColor.Position = UDim2.new(0, x - 5, 0, y - 5)
 			ColorDisplay.BackgroundColor3 = color
 			callback(color)
 		end)
