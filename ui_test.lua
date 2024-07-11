@@ -337,8 +337,8 @@ function Library:Window(title)
 		for i,v in pairs(options) do
 			local Option = Instance.new("TextButton")
 			Option.Parent = DropdownList
-			Option.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			Option.BackgroundTransparency = 1.000
+			Option.BackgroundColor3 = Color3.fromRGB(39, 39, 39)
+			Option.BorderSizePixel = 0
 			Option.Size = UDim2.new(0, 300, 0, 40)
 			Option.Font = Enum.Font.GothamSemibold
 			Option.Text = v
@@ -366,7 +366,7 @@ function Library:Window(title)
 		SliderContainer.Parent = Container
 		SliderContainer.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 		SliderContainer.BorderSizePixel = 0
-		SliderContainer.Size = UDim2.new(0, 300, 0, 40)
+		SliderContainer.Size = UDim2.new(0, 300, 0, 60)
 		
 		SliderName.Name = "SliderName"
 		SliderName.Parent = SliderContainer
@@ -386,8 +386,8 @@ function Library:Window(title)
 		Slider.Parent = SliderContainer
 		Slider.BackgroundColor3 = Color3.fromRGB(39, 39, 39)
 		Slider.BorderSizePixel = 0
-		Slider.Position = UDim2.new(0.852941215, 0, 0.0666666627, 0)
-		Slider.Size = UDim2.new(0, 30, 0, 28)
+		Slider.Position = UDim2.new(0.0245098043, 0, 0.642857149, 0)
+		Slider.Size = UDim2.new(0, 250, 0, 10)
 		Slider.AutoButtonColor = false
 		Slider.Font = Enum.Font.SourceSans
 		Slider.Text = ""
@@ -398,17 +398,17 @@ function Library:Window(title)
 		UICorner.Parent = Slider
 		
 		Bar.Name = "Bar"
-		Bar.Parent = SliderContainer
+		Bar.Parent = Slider
 		Bar.BackgroundColor3 = Color3.fromRGB(39, 39, 39)
 		Bar.BorderSizePixel = 0
-		Bar.Position = UDim2.new(0.0245098043, 0, 0.714285731, 0)
-		Bar.Size = UDim2.new(0, 280, 0, 6)
+		Bar.Position = UDim2.new(0, 0, 0.5, -5)
+		Bar.Size = UDim2.new(1, 0, 0, 10)
 		
 		Fill.Name = "Fill"
 		Fill.Parent = Bar
 		Fill.BackgroundColor3 = Color3.fromRGB(0, 255, 102)
 		Fill.BorderSizePixel = 0
-		Fill.Size = UDim2.new(0, 0, 0, 6)
+		Fill.Size = UDim2.new(0, 0, 1, 0)
 		
 		Value.Name = "Value"
 		Value.Parent = SliderContainer
@@ -517,30 +517,6 @@ function Library:Window(title)
 			ColorDisplay.BackgroundColor3 = color
 			callback(color)
 		end)
-	end
-	
-	function Lib:Section(name)
-		local SectionContainer = Instance.new("Frame")
-		local SectionLabel = Instance.new("TextLabel")
-		
-		SectionContainer.Name = "SectionContainer"
-		SectionContainer.Parent = Container
-		SectionContainer.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-		SectionContainer.BorderSizePixel = 0
-		SectionContainer.Size = UDim2.new(0, 300, 0, 40)
-		
-		SectionLabel.Name = "SectionLabel"
-		SectionLabel.Parent = SectionContainer
-		SectionLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		SectionLabel.BackgroundTransparency = 1.000
-		SectionLabel.Position = UDim2.new(0.0245098043, 0, 0.142857149, 0)
-		SectionLabel.Size = UDim2.new(0, 280, 0, 28)
-		SectionLabel.Font = Enum.Font.GothamBold
-		SectionLabel.Text = name
-		SectionLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-		SectionLabel.TextScaled = true
-		SectionLabel.TextSize = 14.000
-		SectionLabel.TextWrapped = true
 	end
 	
 	return Lib
