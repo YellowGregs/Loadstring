@@ -73,6 +73,14 @@ function UILibrary.new(title)
         Font = Enum.Font.GothamBold
     })
 
+    self.toggleButton = createInstance("TextButton", {
+        Parent = self.mainFrame,
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1, 0, 1, 0),
+        Text = "",
+        AutoButtonColor = false
+    })
+
     self.dropdownFrame = createInstance("Frame", {
         Parent = self.mainFrame,
         BackgroundTransparency = 1,
@@ -86,7 +94,7 @@ function UILibrary.new(title)
 
     self.screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
-    self.mainFrame.MouseButton1Click:Connect(function()
+    self.toggleButton.MouseButton1Click:Connect(function()
         self:toggleDropdown()
     end)
 
