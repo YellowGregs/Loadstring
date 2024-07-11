@@ -1,3 +1,5 @@
+-- dont use this shit its terrible what i did
+
 local UiLib = Instance.new("ScreenGui")
 UiLib.Name = "UiLib"
 UiLib.Parent = game.CoreGui
