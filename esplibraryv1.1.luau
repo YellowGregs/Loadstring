@@ -10,7 +10,7 @@ ToDo:
 - Properly fix Arrow Offscreen (broken)
 - Improve Skeleton Esp 
 - Properly Fix remove_esp funtion
-- FIX TO THE GODDAMN VECTOR2 & VECTOR3 ErROR SHIT I KEPT GETTING IN THE LOGS
+- FIX TO THE GODDAMN VECTOR2 & VECTOR3 ErROR SHIT I KEPT GETTING IN THE CONSOELLOGS
 - etc 
 
 - im so fucking pissed since its fucking 3 am in the goddamn morning and i scripted this in 3 hours, while using my and linemaster esp library that has no updates,
