@@ -25,4 +25,4 @@ local silentAim = loadstring(game:HttpGet("https://raw.githubusercontent.com/Yel
 
 ---
 
-You can now turn it on by setting it up like this `silentAim.Enabled = true`.
+You can turn it on by setting it up like this `silentAim.Enabled = true`. in your UI Lib.
