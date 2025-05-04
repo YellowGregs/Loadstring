@@ -5,7 +5,7 @@ if you want to use the silent aim for you arsenal script here:
 local silentAim = loadstring(game:HttpGet("https://raw.githubusercontent.com/YellowGregs/Loadstring/refs/heads/main/Arsenal_Silent-Aim.luau"))()
 ```
 
-That will grab the full silent aim script and return the config table, which you can tweak to your liking.
+That will grab the full silent aim script and return the config table, which you can tweak to what you like.
 
 ---
 
